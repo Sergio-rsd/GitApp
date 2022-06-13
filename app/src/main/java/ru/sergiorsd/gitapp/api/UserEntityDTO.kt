@@ -6,11 +6,12 @@ import com.google.gson.annotations.SerializedName
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class UserEntityDTO(
-    val id: Int,
     val login: String,
+    val id: Long,
     @SerializedName("avatar_url")
-    val avatarUrl: String,
-    @SerializedName("site_admin")
-    val siteAdmin: Boolean,
-    val type: String
+    val avatarUrl: String
+//
+//    @SerializedName("site_admin")
+//    val siteAdmin: Boolean,
+//    val type: String
 )

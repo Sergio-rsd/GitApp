@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/user_description_view_padding">
+
+    <ImageView
+        android:id="@+id/avatar_image_view"
+        android:layout_width="@dimen/image_avatar_size"
+        android:layout_height="@dimen/image_avatar_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/login_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/text_vertical_margin_view"
+        android:layout_marginStart="@dimen/text_description_margin_view"
+        android:textSize="@dimen/login_text_size"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Login" />
+
+    <TextView
+        android:id="@+id/uid_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/text_vertical_margin_view"
+        android:layout_marginStart="@dimen/text_description_margin_view"
+        android:textSize="@dimen/id_text_size"
+        app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
+        app:layout_constraintTop_toBottomOf="@+id/login_text_view"
+        tools:text="Identification" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="main__padding">5dp</dimen>
+    <dimen name="image_avatar_size">72dp</dimen>
+    <dimen name="text_description_margin_view">10dp</dimen>
+    <dimen name="text_vertical_margin_view">4dp</dimen>
+    <dimen name="user_description_view_padding">10dp</dimen>
+    <dimen name="id_text_size">16sp</dimen>
+    <dimen name="login_text_size">22sp</dimen>
 </resources>
