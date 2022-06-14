@@ -1,10 +1,11 @@
-package ru.sergiorsd.gitapp
+package ru.sergiorsd.gitapp.data
 
 import android.os.Handler
 import android.os.Looper
-import ru.sergiorsd.gitapp.api.UserEntityDTO
+import ru.sergiorsd.gitapp.domain.entities.UserEntityDTO
+import ru.sergiorsd.gitapp.domain.repository.UsersRepository
 
-private const val FAKE_DELAY = 1_000L
+private const val FAKE_DELAY = 2_000L
 
 class FakeUsersRepositoryImpl : UsersRepository {
 

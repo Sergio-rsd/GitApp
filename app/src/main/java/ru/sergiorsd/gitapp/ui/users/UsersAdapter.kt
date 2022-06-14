@@ -1,8 +1,8 @@
-package ru.sergiorsd.gitapp
+package ru.sergiorsd.gitapp.ui.users
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import ru.sergiorsd.gitapp.api.UserEntityDTO
+import ru.sergiorsd.gitapp.domain.entities.UserEntityDTO
 
 class UsersAdapter : RecyclerView.Adapter<UserViewHolder>() {
     private val data = mutableListOf<UserEntityDTO>()

@@ -1,6 +1,6 @@
-package ru.sergiorsd.gitapp
+package ru.sergiorsd.gitapp.domain.repository
 
-import ru.sergiorsd.gitapp.api.UserEntityDTO
+import ru.sergiorsd.gitapp.domain.entities.UserEntityDTO
 
 interface UsersRepository {
 

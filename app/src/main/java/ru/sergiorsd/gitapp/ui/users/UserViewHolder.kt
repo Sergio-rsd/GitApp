@@ -1,10 +1,11 @@
-package ru.sergiorsd.gitapp
+package ru.sergiorsd.gitapp.ui.users
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import ru.sergiorsd.gitapp.api.UserEntityDTO
+import ru.sergiorsd.gitapp.R
+import ru.sergiorsd.gitapp.domain.entities.UserEntityDTO
 import ru.sergiorsd.gitapp.databinding.ItemUserBinding
 
 class UserViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(

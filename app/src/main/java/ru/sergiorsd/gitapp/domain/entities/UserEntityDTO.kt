@@ -1,4 +1,4 @@
-package ru.sergiorsd.gitapp.api
+package ru.sergiorsd.gitapp.domain.entities
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
