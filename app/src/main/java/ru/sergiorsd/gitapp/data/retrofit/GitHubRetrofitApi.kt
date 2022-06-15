@@ -6,5 +6,5 @@ import ru.sergiorsd.gitapp.domain.entities.UserEntityDTO
 
 interface GitHubRetrofitApi {
     @GET("users")
-    fun getListUser(): Call<List<UserEntityDTO>>
+    fun getListUsers(): Call<List<UserEntityDTO>>
 }

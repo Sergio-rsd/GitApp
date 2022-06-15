@@ -1,4 +1,4 @@
-package ru.sergiorsd.gitapp.data
+package ru.sergiorsd.gitapp.data.fakeresource
 
 import android.os.Handler
 import android.os.Looper
