@@ -27,6 +27,5 @@ class UsersAdapter : RecyclerView.Adapter<UserViewHolder>() {
         data.clear()
         data.addAll(users)
         notifyDataSetChanged()
-
     }
 }
