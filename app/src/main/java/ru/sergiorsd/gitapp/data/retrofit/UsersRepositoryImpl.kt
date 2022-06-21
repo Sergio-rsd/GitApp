@@ -51,5 +51,4 @@ class UsersRepositoryImpl : UsersRepository {
         )
         .build()
         .create(GitHubRetrofitApi::class.java)
-
 }
