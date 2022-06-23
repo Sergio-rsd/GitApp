@@ -17,6 +17,5 @@ class UserViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         binding.avatarImageView.load(userEntity.avatarUrl)
         binding.loginTextView.text = userEntity.login
         binding.uidTextView.text = userEntity.id.toString()
-
     }
 }

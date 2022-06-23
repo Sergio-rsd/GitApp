@@ -10,13 +10,13 @@ import ru.sergiorsd.gitapp.databinding.ActivityMainBinding
 import ru.sergiorsd.gitapp.domain.entities.UserEntityDTO
 import ru.sergiorsd.gitapp.domain.repository.UsersRepository
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), UsersContract.View {
 
     private lateinit var binding: ActivityMainBinding
 
     private val adapter = UsersAdapter()
 
-    private val usersRepo: UsersRepository by lazy { app.usersRepo }
+    private lateinit var presenter: UsersContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,46 +24,42 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initViews()
+
+        presenter = UsersPresenter(app.usersRepo)
+        presenter.attach(this)
+    }
+
+    override fun onDestroy() {
+        presenter.detach()
+        super.onDestroy()
     }
 
     private fun initViews() {
         showProgress(false)
 
         binding.mainRefreshButton.setOnClickListener {
-            loadData()
+//            loadData()
+            presenter.onRefresh()
         }
 
         initRecyclerView()
     }
 
-    private fun loadData() {
-        showProgress(true)
-        usersRepo.getUsers(
-            onSuccess = {
-                showProgress(false)
-                onDataLoaded(it)
-            },
-            onError = {
-                showProgress(false)
-                onError(it)
-            }
-        )
-    }
-
-    private fun onDataLoaded(data: List<UserEntityDTO>) {
-        adapter.setData(data)
-    }
-
-    private fun onError(throwable: Throwable) {
-        Toast.makeText(this, throwable.message, Toast.LENGTH_SHORT).show()
-    }
 
     private fun initRecyclerView() {
         binding.activityMainRecycler.layoutManager = LinearLayoutManager(this)
         binding.activityMainRecycler.adapter = adapter
     }
 
-    private fun showProgress(inProgress: Boolean) {
+    override fun showUsers(users: List<UserEntityDTO>) {
+        adapter.setData(users)
+    }
+
+    override fun showError(throwable: Throwable) {
+        Toast.makeText(this, throwable.message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun showProgress(inProgress: Boolean) {
         binding.progressBar.isVisible = inProgress
         binding.activityMainRecycler.isVisible = !inProgress
     }
