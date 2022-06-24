@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import ru.sergiorsd.gitapp.app
 import ru.sergiorsd.gitapp.databinding.ActivityMainBinding
 import ru.sergiorsd.gitapp.domain.entities.UserEntityDTO
-import ru.sergiorsd.gitapp.domain.repository.UsersRepository
 
 class MainActivity : AppCompatActivity(), UsersContract.View {
 
@@ -25,8 +24,17 @@ class MainActivity : AppCompatActivity(), UsersContract.View {
 
         initViews()
 
-        presenter = UsersPresenter(app.usersRepo)
+        presenter = extractPresenter()
         presenter.attach(this)
+    }
+
+    private fun extractPresenter(): UsersContract.Presenter {
+        return lastCustomNonConfigurationInstance as? UsersContract.Presenter
+            ?: UsersPresenter(app.usersRepo)
+    }
+
+    override fun onRetainCustomNonConfigurationInstance(): UsersContract.Presenter {
+        return presenter
     }
 
     override fun onDestroy() {
@@ -43,6 +51,8 @@ class MainActivity : AppCompatActivity(), UsersContract.View {
         }
 
         initRecyclerView()
+
+        showProgress(false)
     }
 
 

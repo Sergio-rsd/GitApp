@@ -6,7 +6,7 @@ interface UsersContract {
 
     interface View {
 
-        fun showUsers(user : List<UserEntityDTO>)
+        fun showUsers(users : List<UserEntityDTO>)
         fun showError(throwable: Throwable)
         fun showProgress(inProgress: Boolean)
     }
