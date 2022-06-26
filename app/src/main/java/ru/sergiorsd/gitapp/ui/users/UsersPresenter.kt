@@ -40,7 +40,6 @@ class UsersPresenter(
                 view?.showProgress(false)
                 view?.showUsers(it)
                 usersList = it
-
 //                loadingError = null
                 inProgress = false
             },
