@@ -9,6 +9,7 @@ interface UsersContract {
         fun showUsers(users : List<UserEntityDTO>)
         fun showError(throwable: Throwable)
         fun showProgress(inProgress: Boolean)
+        fun openProfile(userEntity: UserEntityDTO)
     }
 
     interface Presenter {
@@ -16,6 +17,7 @@ interface UsersContract {
         fun detach()
 
         fun onRefresh()
+        fun onUserClick(userEntity: UserEntityDTO)
 
     }
 }

@@ -7,4 +7,6 @@
     <dimen name="user_description_view_padding">10dp</dimen>
     <dimen name="id_text_size">16sp</dimen>
     <dimen name="login_text_size">22sp</dimen>
+    <dimen name="details_margin_main">10dp</dimen>
+    <dimen name="image_size_details">220dp</dimen>
 </resources>

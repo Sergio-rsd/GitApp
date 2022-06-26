@@ -1,5 +1,7 @@
 package ru.sergiorsd.gitapp.ui.users
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -8,14 +10,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import ru.sergiorsd.gitapp.app
 import ru.sergiorsd.gitapp.databinding.ActivityMainBinding
 import ru.sergiorsd.gitapp.domain.entities.UserEntityDTO
+import ru.sergiorsd.gitapp.ui.profile.DetailsActivity
 
 class MainActivity : AppCompatActivity(), UsersContract.View {
 
     private lateinit var binding: ActivityMainBinding
 
-    private val adapter = UsersAdapter()
-
     private lateinit var presenter: UsersContract.Presenter
+
+    private val adapter = UsersAdapter {
+        presenter.onUserClick(it)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +38,7 @@ class MainActivity : AppCompatActivity(), UsersContract.View {
             ?: UsersPresenter(app.usersRepo)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onRetainCustomNonConfigurationInstance(): UsersContract.Presenter {
         return presenter
     }
@@ -55,7 +61,6 @@ class MainActivity : AppCompatActivity(), UsersContract.View {
         showProgress(false)
     }
 
-
     private fun initRecyclerView() {
         binding.activityMainRecycler.layoutManager = LinearLayoutManager(this)
         binding.activityMainRecycler.adapter = adapter
@@ -72,5 +77,13 @@ class MainActivity : AppCompatActivity(), UsersContract.View {
     override fun showProgress(inProgress: Boolean) {
         binding.progressBar.isVisible = inProgress
         binding.activityMainRecycler.isVisible = !inProgress
+    }
+
+    override fun openProfile(userEntity: UserEntityDTO) {
+        val intent = Intent(this,DetailsActivity::class.java)
+        intent.putExtra("id", userEntity.id.toString())
+        intent.putExtra("login", userEntity.login)
+        intent.putExtra("url", userEntity.avatarUrl)
+        startActivity(intent)
     }
 }
