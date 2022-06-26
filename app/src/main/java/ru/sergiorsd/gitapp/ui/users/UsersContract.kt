@@ -1,15 +1,15 @@
 package ru.sergiorsd.gitapp.ui.users
 
-import ru.sergiorsd.gitapp.domain.entities.UserEntityDTO
+import ru.sergiorsd.gitapp.domain.entities.UserEntity
 
 interface UsersContract {
 
     interface View {
 
-        fun showUsers(users : List<UserEntityDTO>)
+        fun showUsers(users : List<UserEntity>)
         fun showError(throwable: Throwable)
         fun showProgress(inProgress: Boolean)
-        fun openProfile(userEntity: UserEntityDTO)
+        fun openProfile(userEntity: UserEntity)
     }
 
     interface Presenter {
@@ -17,7 +17,7 @@ interface UsersContract {
         fun detach()
 
         fun onRefresh()
-        fun onUserClick(userEntity: UserEntityDTO)
+        fun onUserClick(userEntity: UserEntity)
 
     }
 }

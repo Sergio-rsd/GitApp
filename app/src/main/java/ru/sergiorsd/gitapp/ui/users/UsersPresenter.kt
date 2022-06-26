@@ -1,6 +1,6 @@
 package ru.sergiorsd.gitapp.ui.users
 
-import ru.sergiorsd.gitapp.domain.entities.UserEntityDTO
+import ru.sergiorsd.gitapp.domain.entities.UserEntity
 import ru.sergiorsd.gitapp.domain.repository.UsersRepository
 
 class UsersPresenter(
@@ -8,7 +8,7 @@ class UsersPresenter(
 ) : UsersContract.Presenter {
     private var view: UsersContract.View? = null
 
-    private var usersList: List<UserEntityDTO>? = null
+    private var usersList: List<UserEntity>? = null
 
     //    private var loadingError: Throwable? = null
     private var inProgress: Boolean = false
@@ -28,7 +28,7 @@ class UsersPresenter(
         loadData()
     }
 
-    override fun onUserClick(userEntity: UserEntityDTO) {
+    override fun onUserClick(userEntity: UserEntity) {
         view?.openProfile(userEntity)
     }
 

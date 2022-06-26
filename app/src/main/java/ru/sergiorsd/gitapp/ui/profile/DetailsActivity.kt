@@ -21,7 +21,8 @@ class DetailsActivity : AppCompatActivity() {
 
         binding.apply {
             idDetails.text = String.format(getString(R.string.id_user), intent.getStringExtra("id"))
-            loginDetails.text = String.format(getString(R.string.nick_name), intent.getStringExtra("login"))
+            loginDetails.text =
+                String.format(getString(R.string.nick_name), intent.getStringExtra("login"))
             imageAvatarDetails.load(intent.getStringExtra("url"))
         }
 

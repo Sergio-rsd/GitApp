@@ -1,6 +1,5 @@
 package ru.sergiorsd.gitapp.ui.users
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -9,7 +8,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.sergiorsd.gitapp.app
 import ru.sergiorsd.gitapp.databinding.ActivityMainBinding
-import ru.sergiorsd.gitapp.domain.entities.UserEntityDTO
+import ru.sergiorsd.gitapp.domain.entities.UserEntity
 import ru.sergiorsd.gitapp.ui.profile.DetailsActivity
 
 class MainActivity : AppCompatActivity(), UsersContract.View {
@@ -66,7 +65,7 @@ class MainActivity : AppCompatActivity(), UsersContract.View {
         binding.activityMainRecycler.adapter = adapter
     }
 
-    override fun showUsers(users: List<UserEntityDTO>) {
+    override fun showUsers(users: List<UserEntity>) {
         adapter.setData(users)
     }
 
@@ -79,7 +78,7 @@ class MainActivity : AppCompatActivity(), UsersContract.View {
         binding.activityMainRecycler.isVisible = !inProgress
     }
 
-    override fun openProfile(userEntity: UserEntityDTO) {
+    override fun openProfile(userEntity: UserEntity) {
         val intent = Intent(this,DetailsActivity::class.java)
         intent.putExtra("id", userEntity.id.toString())
         intent.putExtra("login", userEntity.login)

@@ -2,12 +2,12 @@ package ru.sergiorsd.gitapp.ui.users
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import ru.sergiorsd.gitapp.domain.entities.UserEntityDTO
+import ru.sergiorsd.gitapp.domain.entities.UserEntity
 
 class UsersAdapter(
-    private val onItemClickListener: (UserEntityDTO) -> Unit
+    private val onItemClickListener: (UserEntity) -> Unit
 ) : RecyclerView.Adapter<UserViewHolder>() {
-    private val data = mutableListOf<UserEntityDTO>()
+    private val data = mutableListOf<UserEntity>()
 
     init {
         setHasStableIds(true)
@@ -26,7 +26,7 @@ class UsersAdapter(
 
     private fun getIItemUser(position: Int) = data[position]
 
-    fun setData(users: List<UserEntityDTO>) {
+    fun setData(users: List<UserEntity>) {
         data.clear()
         data.addAll(users)
         notifyDataSetChanged()

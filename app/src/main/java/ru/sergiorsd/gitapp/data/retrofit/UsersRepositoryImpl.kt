@@ -7,7 +7,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import ru.sergiorsd.gitapp.domain.entities.UserEntityDTO
+import ru.sergiorsd.gitapp.domain.entities.UserEntity
 import ru.sergiorsd.gitapp.domain.repository.UsersRepository
 
 private const val BASE_URL = "https://api.github.com/"
@@ -16,13 +16,13 @@ private const val ERROR = "NO DATA OR NETWORK ERROR"
 class UsersRepositoryImpl : UsersRepository {
 
     override fun getUsers(
-        onSuccess: (List<UserEntityDTO>) -> Unit,
+        onSuccess: (List<UserEntity>) -> Unit,
         onError: ((Throwable) -> Unit)?
     ) {
-        api.getListUsers().enqueue(object : Callback<List<UserEntityDTO>> {
+        api.getListUsers().enqueue(object : Callback<List<UserEntity>> {
             override fun onResponse(
-                call: Call<List<UserEntityDTO>>,
-                response: Response<List<UserEntityDTO>>
+                call: Call<List<UserEntity>>,
+                response: Response<List<UserEntity>>
             ) {
                 val responseBody = response.body()
                 if (response.isSuccessful && responseBody != null) {
@@ -33,7 +33,7 @@ class UsersRepositoryImpl : UsersRepository {
                 response.body()?.let { onSuccess(it) }
             }
 
-            override fun onFailure(call: Call<List<UserEntityDTO>>, t: Throwable) {
+            override fun onFailure(call: Call<List<UserEntity>>, t: Throwable) {
                 onError?.invoke(t)
             }
         })
