@@ -9,7 +9,8 @@ class UsersPresenter(
     private var view: UsersContract.View? = null
 
     private var usersList: List<UserEntityDTO>? = null
-//    private var loadingError: Throwable? = null
+
+    //    private var loadingError: Throwable? = null
     private var inProgress: Boolean = false
 
     override fun attach(view: UsersContract.View) {

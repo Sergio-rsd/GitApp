@@ -17,10 +17,13 @@ class DetailsActivity : AppCompatActivity() {
         binding = ItemUserDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val intent :Intent = intent
-        binding.idDetails.text = intent.getStringExtra("id")
-        binding.loginDetails.text = intent.getStringExtra("login")
-        binding.imageAvatarDetails.load(intent.getStringExtra("url"))
+        val intent: Intent = intent
+
+        binding.apply {
+            idDetails.text = String.format(getString(R.string.id_user), intent.getStringExtra("id"))
+            loginDetails.text = String.format(getString(R.string.nick_name), intent.getStringExtra("login"))
+            imageAvatarDetails.load(intent.getStringExtra("url"))
+        }
 
     }
 }
