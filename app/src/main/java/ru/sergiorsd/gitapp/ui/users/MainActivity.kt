@@ -3,22 +3,29 @@ package ru.sergiorsd.gitapp.ui.users
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStore
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.sergiorsd.gitapp.app
 import ru.sergiorsd.gitapp.databinding.ActivityMainBinding
 import ru.sergiorsd.gitapp.domain.entities.UserEntity
 import ru.sergiorsd.gitapp.ui.profile.DetailsActivity
 
-class MainActivity : AppCompatActivity(), UsersContract.View {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private lateinit var presenter: UsersContract.Presenter
+    private val viewModel: UserViewModel by viewModels {
+        UserViewModelFactory(app.usersRepo)
+    }
 
     private val adapter = UsersAdapter {
-        presenter.onUserClick(it)
+        viewModel.onUserClick(it)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,32 +34,24 @@ class MainActivity : AppCompatActivity(), UsersContract.View {
         setContentView(binding.root)
 
         initViews()
+        initViewModel()
 
-        presenter = extractPresenter()
-        presenter.attach(this)
     }
 
-    private fun extractPresenter(): UsersContract.Presenter {
-        return lastCustomNonConfigurationInstance as? UsersContract.Presenter
-            ?: UsersPresenter(app.usersRepo)
-    }
+    private fun initViewModel() {
 
-    @Deprecated("Deprecated in Java")
-    override fun onRetainCustomNonConfigurationInstance(): UsersContract.Presenter {
-        return presenter
-    }
+        viewModel.progressLiveData.observe(this) { showProgress(it) }
+        viewModel.usersLiveData.observe(this) { showUsers(it) }
+        viewModel.errorLiveData.observe(this) { showError(it) }
+        viewModel.openProfileLiveData.observe(this) { openProfile(it) }
 
-    override fun onDestroy() {
-        presenter.detach()
-        super.onDestroy()
     }
 
     private fun initViews() {
         showProgress(false)
 
         binding.mainRefreshButton.setOnClickListener {
-//            loadData()
-            presenter.onRefresh()
+            viewModel.onRefresh()
         }
 
         initRecyclerView()
@@ -65,21 +64,21 @@ class MainActivity : AppCompatActivity(), UsersContract.View {
         binding.activityMainRecycler.adapter = adapter
     }
 
-    override fun showUsers(users: List<UserEntity>) {
+    private fun showUsers(users: List<UserEntity>) {
         adapter.setData(users)
     }
 
-    override fun showError(throwable: Throwable) {
+    private fun showError(throwable: Throwable) {
         Toast.makeText(this, throwable.message, Toast.LENGTH_SHORT).show()
     }
 
-    override fun showProgress(inProgress: Boolean) {
+    private fun showProgress(inProgress: Boolean) {
         binding.progressBar.isVisible = inProgress
         binding.activityMainRecycler.isVisible = !inProgress
     }
 
-    override fun openProfile(userEntity: UserEntity) {
-        val intent = Intent(this,DetailsActivity::class.java)
+    private fun openProfile(userEntity: UserEntity) {
+        val intent = Intent(this, DetailsActivity::class.java)
         intent.putExtra("id", userEntity.id.toString())
         intent.putExtra("login", userEntity.login)
         intent.putExtra("url", userEntity.avatarUrl)
