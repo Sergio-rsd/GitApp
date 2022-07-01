@@ -39,10 +39,6 @@ class UserViewModel(
 
     }
 
-    override fun onCleared() {
-        super.onCleared()
-    }
-
     private fun <T> LiveData<T>.mutable(): MutableLiveData<T> {
         return this as? MutableLiveData<T>
             ?: throw IllegalStateException("It is not MutableLiveData o_O")
