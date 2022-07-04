@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.recyclerview.widget.LinearLayoutManager
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import ru.sergiorsd.gitapp.app
 import ru.sergiorsd.gitapp.databinding.ActivityMainBinding
 import ru.sergiorsd.gitapp.domain.entities.UserEntity
@@ -28,23 +29,46 @@ class MainActivity : AppCompatActivity() {
         viewModel.onUserClick(it)
     }
 
+    private val viewModelDisposable = CompositeDisposable()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         initViews()
-        initViewModel()
-
+//        initViewModel()
+        viewModelDisposable.addAll(
+            viewModel.progressLiveData.subscribe { showProgress(it) },
+            viewModel.usersLiveData.subscribe { showUsers(it) },
+            viewModel.errorLiveData.subscribe { showError(it) },
+            viewModel.openProfileLiveData.subscribe { openProfile(it) }
+        )
     }
 
-    private fun initViewModel() {
+    /*
 
-        viewModel.progressLiveData.observe(this) { showProgress(it) }
-        viewModel.usersLiveData.observe(this) { showUsers(it) }
-        viewModel.errorLiveData.observe(this) { showError(it) }
-        viewModel.openProfileLiveData.observe(this) { openProfile(it) }
+        private fun initViewModel() {
 
+
+            viewModel.progressLiveData.subscribe { showProgress(it) }
+            viewModel.usersLiveData.subscribe { showUsers(it) }
+            viewModel.errorLiveData.subscribe { showError(it) }
+            viewModel.openProfileLiveData.subscribe { openProfile(it) }
+            */
+/*
+              viewModel.progressLiveData.observe(this) { showProgress(it) }
+              viewModel.usersLiveData.observe(this) { showUsers(it) }
+              viewModel.errorLiveData.observe(this) { showError(it) }
+              viewModel.openProfileLiveData.observe(this) { openProfile(it) }
+              *//*
+
+
+    }
+*/
+    override fun onDestroy() {
+        viewModelDisposable.dispose()
+        super.onDestroy()
     }
 
     private fun initViews() {

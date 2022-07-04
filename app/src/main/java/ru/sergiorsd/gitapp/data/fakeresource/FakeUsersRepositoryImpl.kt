@@ -2,6 +2,7 @@ package ru.sergiorsd.gitapp.data.fakeresource
 
 import android.os.Handler
 import android.os.Looper
+import io.reactivex.rxjava3.core.Single
 import ru.sergiorsd.gitapp.domain.entities.UserEntity
 import ru.sergiorsd.gitapp.domain.repository.UsersRepository
 
@@ -23,4 +24,6 @@ class FakeUsersRepositoryImpl : UsersRepository {
             onSuccess(data)
         }, FAKE_DELAY)
     }
+
+    override fun getUsers(): Single<List<UserEntity>> = Single.just(data)
 }
