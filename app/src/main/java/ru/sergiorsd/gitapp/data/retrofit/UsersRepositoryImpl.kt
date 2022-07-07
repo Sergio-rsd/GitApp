@@ -40,8 +40,10 @@ class UsersRepositoryImpl : UsersRepository {
         })
         */
         api.getListUsers().subscribeBy(
-            onSuccess = {
-                onSuccess.invoke(it)
+            onSuccess = { usersList ->
+                onSuccess.invoke(usersList.map { dto ->
+                    dto.mapDtoToEntity()
+                })
             },
             onError = {
                 onError?.invoke(it)
@@ -49,7 +51,11 @@ class UsersRepositoryImpl : UsersRepository {
         )
     }
 
-    override fun getUsers(): Single<List<UserEntity>> = api.getListUsers()
+    override fun getUsers(): Single<List<UserEntity>> = api.getListUsers().map { usersList ->
+        usersList.map { dto ->
+            dto.mapDtoToEntity()
+        }
+    }
 
     private val api = Retrofit.Builder()
         .baseUrl(BASE_URL)

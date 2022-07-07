@@ -10,5 +10,5 @@ interface GitHubRetrofitApi {
     @GET("users")
 //    fun getListUsers(): Call<List<UserEntity>>
 //    fun getListUsers(): Observable<List<UserEntity>>
-    fun getListUsers(): Single<List<UserEntity>>
+    fun getListUsers(): Single<List<UserEntityDto>>
 }
