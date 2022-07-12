@@ -12,9 +12,11 @@ interface UsersDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertUser(userEntityRoom: UserEntityRoom)
+/*
 
     @Query("SELECT * FROM UserEntityRoom ")
     fun findByIdUser(userEntityRoom: UserEntityRoom)
+*/
 
     @Insert
     fun insertAllUsers(vararg userEntityRoom: UserEntityRoom)
