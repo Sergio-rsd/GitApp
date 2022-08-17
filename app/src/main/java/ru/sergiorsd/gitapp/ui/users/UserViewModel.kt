@@ -10,9 +10,9 @@ import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import io.reactivex.rxjava3.subjects.PublishSubject
 import io.reactivex.rxjava3.subjects.Subject
+import ru.sergiorsd.gitapp.data.isnetwork.NetworkStatus
 import ru.sergiorsd.gitapp.domain.entities.UserEntity
 import ru.sergiorsd.gitapp.domain.repository.UsersRepository
-import ru.sergiorsd.gitapp.utils.SingleEventLiveData
 
 class UserViewModel(
     private val usersRepo: UsersRepository
@@ -22,6 +22,11 @@ class UserViewModel(
     val errorLiveData: Observable<Throwable> = BehaviorSubject.create()
     val progressLiveData: Observable<Boolean> = BehaviorSubject.create()
     val openProfileLiveData: Observable<UserEntity> = PublishSubject.create()
+//    private val context = app.applicationContext
+
+    //    val isNetwork: Observable<Boolean> = BehaviorSubject.create()
+    private lateinit var isNetwork: NetworkStatus
+
 
     /*
     val usersLiveData: LiveData<List<UserEntity>> = MutableLiveData()
@@ -29,7 +34,22 @@ class UserViewModel(
     val progressLiveData: LiveData<Boolean> = MutableLiveData()
     val openProfileLiveData: LiveData<UserEntity> = SingleEventLiveData()
 */
+
     fun onRefresh() {
+        // TODO здесь проверку на наличие сети?
+//        val context = App().app.baseContext
+//        val context = App().app.applicationContext
+//        val context =  Context as App
+/*
+
+        val context = App().applicationContext
+
+        isNetwork = NetworkStatus(context)
+        isNetwork.isOnline().subscribe {
+            Toast.makeText(context, "$it - Signal", Toast.LENGTH_SHORT).show()
+        }
+*/
+
         loadData()
     }
 
@@ -59,13 +79,11 @@ class UserViewModel(
                     errorLiveData.mutable().onNext(it)
                 }
             )
-
     }
 
     fun onUserClick(userEntity: UserEntity) {
         (openProfileLiveData as Subject).onNext(userEntity)
 //        openProfileLiveData.mutable().onNext(userEntity)
-//        openProfileLiveData
 
     }
 

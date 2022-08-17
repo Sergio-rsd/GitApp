@@ -11,8 +11,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.recyclerview.widget.LinearLayoutManager
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.kotlin.subscribeBy
+import io.reactivex.rxjava3.schedulers.Schedulers
 import ru.sergiorsd.gitapp.app
+import ru.sergiorsd.gitapp.data.isnetwork.NetworkStatus
 import ru.sergiorsd.gitapp.databinding.ActivityMainBinding
 import ru.sergiorsd.gitapp.domain.entities.UserEntity
 import ru.sergiorsd.gitapp.ui.profile.DetailsActivity
@@ -30,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val viewModelDisposable = CompositeDisposable()
+    private lateinit var isNetwork: NetworkStatus
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +50,15 @@ class MainActivity : AppCompatActivity() {
             viewModel.errorLiveData.subscribe { showError(it) },
             viewModel.openProfileLiveData.subscribe { openProfile(it) }
         )
+        isNetwork = NetworkStatus(this)
+        isNetwork.isOnline().subscribe {
+            Toast.makeText(this, "$it - signal", Toast.LENGTH_SHORT).show()
+        }
+        isNetwork.isOnlineSingle().subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy{
+                Toast.makeText(this, "$it - Single signal", Toast.LENGTH_SHORT).show()
+            }
     }
 
     /*
