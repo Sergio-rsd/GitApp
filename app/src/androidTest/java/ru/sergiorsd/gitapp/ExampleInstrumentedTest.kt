@@ -1,4 +1,4 @@
-package ru.sergiorsd.gitapp
+package ru.sergiorsd.gitapp.ru.sergiorsd.gitapp
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
