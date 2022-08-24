@@ -10,14 +10,12 @@ class UsersPresenter(
 
     private var usersList: List<UserEntity>? = null
 
-    //    private var loadingError: Throwable? = null
     private var inProgress: Boolean = false
 
     override fun attach(view: UsersContract.View) {
         this.view = view
         view.showProgress(inProgress)
         usersList?.let { view.showUsers(it) }
-//        loadingError?.let { view.showError(it) }
     }
 
     override fun detach() {
@@ -41,13 +39,11 @@ class UsersPresenter(
                 view?.showUsers(it)
                 usersList = it
 
-//                loadingError = null
                 inProgress = false
             },
             onError = {
                 view?.showProgress(false)
                 view?.showError(it)
-//                loadingError = it
                 inProgress = false
             }
         )
