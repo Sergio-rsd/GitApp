@@ -64,11 +64,7 @@ class SearchPresenterTest {
         verify(viewContract, times(1)).showUsers(responseResult)
 //        verify(repository, times(1)).getUsers(onSuccess = {responseResult},null)
 //
-        /*
-        verify(
-            repository, times(1)
-        ).getUsers(onSuccess = { viewContract.showUsers(responseResult) }, onError = { null })
-        */
+
     }
 
     @Test // проверка ошибки при обращении к репозитарию
