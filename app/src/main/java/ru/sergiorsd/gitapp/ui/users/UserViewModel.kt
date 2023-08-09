@@ -40,15 +40,15 @@ class UserViewModel(
 //        val context = App().app.baseContext
 //        val context = App().app.applicationContext
 //        val context =  Context as App
-/*
+        /*
 
-        val context = App().applicationContext
+                val context = App().applicationContext
 
-        isNetwork = NetworkStatus(context)
-        isNetwork.isOnline().subscribe {
-            Toast.makeText(context, "$it - Signal", Toast.LENGTH_SHORT).show()
-        }
-*/
+                isNetwork = NetworkStatus(context)
+                isNetwork.isOnline().subscribe {
+                    Toast.makeText(context, "$it - Signal", Toast.LENGTH_SHORT).show()
+                }
+        */
 
         loadData()
     }
