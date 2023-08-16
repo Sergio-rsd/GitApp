@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         )
         isNetwork = NetworkStatus(this)
         isNetwork.isOnline().subscribe {
-            Toast.makeText(this, "$it - signal", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "$it - Signal", Toast.LENGTH_SHORT).show()
         }
         isNetwork.isOnlineSingle().subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
