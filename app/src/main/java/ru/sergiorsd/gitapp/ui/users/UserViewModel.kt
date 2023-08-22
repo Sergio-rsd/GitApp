@@ -66,17 +66,18 @@ class UserViewModel(
             }
         )
 */
-        progressLiveData.mutable().onNext(true)
+        progressLiveData.mutableObserve().onNext(true)
+
         usersRepo.getUsers()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
                 onSuccess = {
-                    progressLiveData.mutable().onNext(false)
-                    usersLiveData.mutable().onNext(it)
+                    progressLiveData.mutableObserve().onNext(false)
+                    usersLiveData.mutableObserve().onNext(it)
                 },
                 onError = {
-                    progressLiveData.mutable().onNext(false)
-                    errorLiveData.mutable().onNext(it)
+                    progressLiveData.mutableObserve().onNext(false)
+                    errorLiveData.mutableObserve().onNext(it)
                 }
             )
     }
@@ -92,7 +93,7 @@ class UserViewModel(
             ?: throw IllegalStateException("It is not MutableLiveData o_O")
     }
 
-    private fun <T : Any> Observable<T>.mutable(): Subject<T> {
+    private fun <T : Any> Observable<T>.mutableObserve(): Subject<T> {
         return this as? Subject<T>
             ?: throw IllegalStateException("It is not Subject o_O")
     }

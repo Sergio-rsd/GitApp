@@ -6,7 +6,7 @@ import retrofit2.Call
 import retrofit2.http.GET
 import ru.sergiorsd.gitapp.domain.entities.UserEntity
 
-interface GitHubRetrofitApi {
+fun interface GitHubRetrofitApi {
     @GET("users")
 //    fun getListUsers(): Call<List<UserEntity>>
 //    fun getListUsers(): Observable<List<UserEntity>>

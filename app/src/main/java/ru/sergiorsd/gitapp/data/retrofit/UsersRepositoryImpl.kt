@@ -39,6 +39,7 @@ class UsersRepositoryImpl : UsersRepository {
             }
         })
         */
+
         api.getListUsers().subscribeBy(
             onSuccess = { usersList ->
                 onSuccess.invoke(usersList.map { dto ->
