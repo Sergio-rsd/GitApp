@@ -8,9 +8,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.pwittchen.reactivenetwork.library.rx3.ReactiveNetwork
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.schedulers.Schedulers
 import ru.sergiorsd.gitapp.app
@@ -35,25 +35,28 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModelDisposable = CompositeDisposable()
     private lateinit var isNetwork: NetworkStatus
+    private var isNetworkDisposable: Disposable? = null
     private var lisStatus: MutableList<Boolean> = mutableListOf()
     private var statusKey = false
-    private var statusTrue = 0
-    private var statusFalse = 0
+//    private var statusTrue = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        isNetwork = NetworkStatus(this)
+
         initViews()
 //        initViewModel()
+
         viewModelDisposable.addAll(
             viewModel.progressLiveData.subscribe { showProgress(it) },
             viewModel.usersLiveData.subscribe { showUsers(it) },
             viewModel.errorLiveData.subscribe { showError(it) },
             viewModel.openProfileLiveData.subscribe { openProfile(it) }
         )
-        isNetwork = NetworkStatus(this)
+
         /*
 
                 isNetwork.isOnline().subscribe {
@@ -103,38 +106,41 @@ class MainActivity : AppCompatActivity() {
         }
 */
 
+        // Способ без класса, только на библиотеке
+        /*
+                ReactiveNetwork
+                    .observeNetworkConnectivity(applicationContext)
+        //            .observeInternetConnectivity()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeBy { isConnectedToInternet ->
+                        run {
+        //                    val stat = isConnectedToInternet.state().toString()
+                            val stat = isConnectedToInternet.available()
+                            Log.d(TAG, "isConnectedToInternet1 = $stat")
+        //                    Log.d(TAG, "isConnectedToInternet2 = $isConnectedToInternet")
 
-        ReactiveNetwork
-            .observeNetworkConnectivity(applicationContext)
-//            .observeInternetConnectivity()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy { isConnectedToInternet ->
-                run {
-//                    val stat = isConnectedToInternet.state().toString()
-                    val stat = isConnectedToInternet.available()
-                    Log.d(TAG, "isConnectedToInternet1 = $stat")
-//                    Log.d(TAG, "isConnectedToInternet2 = $isConnectedToInternet")
+                            if (!statusKey && stat) {
+                                statusKey = true
+                                Log.d(TAG, "ЕСТЬ ИНТЕРНЕТ - statusKey: $statusKey ")
+                                statusTrue += 1
+                            }
+                            if (statusKey && !stat) {
+                                statusKey = false
+                                Log.d(TAG, "НЕТ интернета - statusKey: $statusKey ")
+                            }
+                            lisStatus.add(stat)
 
-                    if (!statusKey && stat) {
-                        statusKey = true
-                        Log.d(TAG, "ЕСТЬ ИНТЕРНЕТ - statusKey: $statusKey ")
-                        statusTrue += 1
+                            Log.d(
+                                TAG,
+                                "$stat - Интернет и statusKey: $statusKey и statusTrue $statusTrue и список $lisStatus и ПОСЛЕДНЕЕ СОСТОЯНИЕ ${lisStatus[lisStatus.size - 1]}"
+                            )
+
+
+                        }
                     }
-                    if (statusKey && !stat) {
-                        statusKey = false
-                        Log.d(TAG, "НЕТ интернета - statusKey: $statusKey ")
-                    }
-                    lisStatus.add(stat)
+         */
 
-                    Log.d(
-                        TAG,
-                        "$stat - Интернет и statusKey: $statusKey и statusTrue $statusTrue и список $lisStatus и ПОСЛЕДНЕЕ СОСТОЯНИЕ ${lisStatus[lisStatus.size-1]}"
-                    )
-
-
-                }
-            }
 
         /*
 
@@ -164,20 +170,21 @@ class MainActivity : AppCompatActivity() {
 */
 
 
- /*       // Главное
+        // Главное
+        /*
         isNetwork.isOnline().subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             //            .lastElement()
 //                    .takeLast(1)
             .subscribeBy {
                 if (!statusKey && it) {
-                    Log.d(TAG, "ЕСТЬ ИНТЕРНЕТ - statusKey: $statusKey ")
                     statusKey = true
+                    Log.d(TAG, "ЕСТЬ ИНТЕРНЕТ - statusKey: $statusKey ")
                     statusTrue += 1
                 }
                 if (statusKey && !it) {
-                    Log.d(TAG, "НЕТ интернета - statusKey: $statusKey ")
                     statusKey = false
+                    Log.d(TAG, "НЕТ интернета - statusKey: $statusKey ")
                 }
                 lisStatus.add(it)
 
@@ -185,21 +192,22 @@ class MainActivity : AppCompatActivity() {
 
                 Log.d(
                     TAG,
-                    "$it - Интернет и statusKey: $statusKey и statusTrue $statusTrue и список $lisStatus"
+                    "$it - Интернет и statusKey: $statusKey и statusTrue $statusTrue и список $lisStatus и ПОСЛЕДНЕЕ СОСТОЯНИЕ ${lisStatus[lisStatus.size - 1]}"
                 )
             }
 */
 
-
+        // Single Internet check
         /*
 
-                        isNetwork.isOnlineSingle().subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeBy{
-                                Toast.makeText(this, "$it - Single СИГНАЛ", Toast.LENGTH_SHORT).show()
-                                Log.d(TAG, "$it - Single СИГНАЛ")
-                            }
+                isNetwork.isOnlineSingle().subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeBy {
+                        Toast.makeText(this, "$it - Single СИГНАЛ", Toast.LENGTH_SHORT).show()
+                        Log.d(TAG, "$it - Single СИГНАЛ")
+                    }
         */
+
 
     }
 
@@ -218,13 +226,14 @@ class MainActivity : AppCompatActivity() {
                   viewModel.usersLiveData.observe(this) { showUsers(it) }
                   viewModel.errorLiveData.observe(this) { showError(it) }
                   viewModel.openProfileLiveData.observe(this) { openProfile(it) }
-                  *//*
-
-
+                  */
+    /*
     }
 */
     override fun onDestroy() {
         viewModelDisposable.dispose()
+        isNetworkDisposable?.dispose()
+
         super.onDestroy()
     }
 
@@ -232,12 +241,54 @@ class MainActivity : AppCompatActivity() {
         showProgress(false)
 
         binding.mainRefreshButton.setOnClickListener {
-            viewModel.onRefresh()
+/*
+            val tt = isInternet()
+            Log.d(TAG, "initViews() called $tt")
+            */
+
+            isInternet()
+
+//            viewModel.onRefresh()
+
         }
 
         initRecyclerView()
 
         showProgress(false)
+    }
+
+    private fun isInternet() {
+
+        isNetworkDisposable = isNetwork.isOnline().subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy {
+                if (!statusKey && it) {
+                    statusKey = true
+                    Log.d(TAG, "ЕСТЬ ИНТЕРНЕТ - statusKey: $statusKey ")
+//                    statusTrue += 1
+                    viewModel.onRefresh(statusKey)
+
+                }
+                if (statusKey && !it) {
+                    statusKey = false
+                    Log.d(TAG, "НЕТ интернета - statusKey: $statusKey ")
+
+                    viewModel.onRefresh(statusKey)
+                }
+
+                /*
+
+                Toast.makeText(this, "$it - Интернет", Toast.LENGTH_SHORT).show()
+
+                lisStatus.add(it)
+
+                Log.d(
+                    TAG,
+                    "$it - Интернет и statusKey: $statusKey и statusTrue $statusTrue и список $lisStatus и ПОСЛЕДНЕЕ СОСТОЯНИЕ ${lisStatus[lisStatus.size - 1]}"
+                )
+                */
+            }
+
     }
 
     private fun initRecyclerView() {

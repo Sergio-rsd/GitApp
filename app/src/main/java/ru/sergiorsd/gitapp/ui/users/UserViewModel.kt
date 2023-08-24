@@ -1,5 +1,6 @@
 package ru.sergiorsd.gitapp.ui.users
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,6 +14,7 @@ import io.reactivex.rxjava3.subjects.Subject
 import ru.sergiorsd.gitapp.data.isnetwork.NetworkStatus
 import ru.sergiorsd.gitapp.domain.entities.UserEntity
 import ru.sergiorsd.gitapp.domain.repository.UsersRepository
+import ru.sergiorsd.gitapp.utils.ListConstant.TAG
 
 class UserViewModel(
     private val usersRepo: UsersRepository
@@ -25,7 +27,7 @@ class UserViewModel(
 //    private val context = app.applicationContext
 
     //    val isNetwork: Observable<Boolean> = BehaviorSubject.create()
-    private lateinit var isNetwork: NetworkStatus
+//    private lateinit var isNetwork: NetworkStatus
 
 
     /*
@@ -35,7 +37,7 @@ class UserViewModel(
     val openProfileLiveData: LiveData<UserEntity> = SingleEventLiveData()
 */
 
-    fun onRefresh() {
+    fun onRefresh(isNetwork:Boolean) {
         // TODO здесь проверку на наличие сети?
 //        val context = App().app.baseContext
 //        val context = App().app.applicationContext
@@ -50,6 +52,7 @@ class UserViewModel(
                 }
         */
 
+        Log.d(TAG, "onRefresh() called with: isNetwork = $isNetwork")
         loadData()
     }
 

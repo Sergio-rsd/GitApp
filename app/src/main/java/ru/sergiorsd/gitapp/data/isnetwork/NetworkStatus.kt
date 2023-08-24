@@ -8,6 +8,7 @@ import android.net.NetworkRequest
 import android.util.Log
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.subjects.BehaviorSubject
 import io.reactivex.rxjava3.subjects.PublishSubject
 import ru.sergiorsd.gitapp.utils.ListConstant
 import ru.sergiorsd.gitapp.utils.ListConstant.TAG
@@ -15,10 +16,10 @@ import kotlin.math.log
 
 class NetworkStatus(context: Context) : IsNetworkStatus {
 
-//    private val status: BehaviorSubject<Boolean> = BehaviorSubject.create()
+    private val status: BehaviorSubject<Boolean> = BehaviorSubject.create()
 
-    //    private val status: Observable<Boolean> = BehaviorSubject.create()
-    private val status: PublishSubject<Boolean> = PublishSubject.create()
+//        private val status: Observable<Boolean> = BehaviorSubject.create()
+//    private val status: PublishSubject<Boolean> = PublishSubject.create()
 //    private val status: AsyncSubject<Boolean> = AsyncSubject.create()
 
 
