@@ -11,4 +11,7 @@ interface UsersRepository {
     )
     // RxJava
     fun getUsers() : Single<List<UserEntity>>
+
+    // Пустой репозиторий в памяти
+    fun getUsersCache() : List<UserEntity>
 }

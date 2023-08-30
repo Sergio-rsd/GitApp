@@ -11,7 +11,6 @@ import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import io.reactivex.rxjava3.subjects.PublishSubject
 import io.reactivex.rxjava3.subjects.Subject
-import ru.sergiorsd.gitapp.data.isnetwork.NetworkStatus
 import ru.sergiorsd.gitapp.domain.entities.UserEntity
 import ru.sergiorsd.gitapp.domain.repository.UsersRepository
 import ru.sergiorsd.gitapp.utils.ListConstant.TAG
@@ -29,31 +28,33 @@ class UserViewModel(
     //    val isNetwork: Observable<Boolean> = BehaviorSubject.create()
 //    private lateinit var isNetwork: NetworkStatus
 
-
     /*
-    val usersLiveData: LiveData<List<UserEntity>> = MutableLiveData()
-    val errorLiveData: LiveData<Throwable> = SingleEventLiveData()
-    val progressLiveData: LiveData<Boolean> = MutableLiveData()
-    val openProfileLiveData: LiveData<UserEntity> = SingleEventLiveData()
+val usersLiveData: LiveData<List<UserEntity>> = MutableLiveData()
+val errorLiveData: LiveData<Throwable> = SingleEventLiveData()
+val progressLiveData: LiveData<Boolean> = MutableLiveData()
+val openProfileLiveData: LiveData<UserEntity> = SingleEventLiveData()
 */
 
-    fun onRefresh(isNetwork:Boolean) {
-        // TODO здесь проверку на наличие сети?
-//        val context = App().app.baseContext
-//        val context = App().app.applicationContext
-//        val context =  Context as App
-        /*
 
-                val context = App().applicationContext
 
-                isNetwork = NetworkStatus(context)
-                isNetwork.isOnline().subscribe {
-                    Toast.makeText(context, "$it - Signal", Toast.LENGTH_SHORT).show()
-                }
-        */
+    fun onRefresh(isNetwork: Boolean) {
 
         Log.d(TAG, "onRefresh() called with: isNetwork = $isNetwork")
-        loadData()
+
+        // TODO здесь разветвление и логика выбора репозитория
+        if (isNetwork){
+            // пустой cache?
+            loadData()
+            // записать в room
+            // записать в cache
+
+        } else {
+            Log.d(TAG, "Брать после ROOM")
+        }
+
+
+
+//        loadData()
     }
 
     private fun loadData() {
@@ -70,6 +71,7 @@ class UserViewModel(
         )
 */
         progressLiveData.mutableObserve().onNext(true)
+
 
         usersRepo.getUsers()
             .observeOn(AndroidSchedulers.mainThread())

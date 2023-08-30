@@ -15,6 +15,7 @@ private const val ERROR = "NO DATA OR NETWORK ERROR"
 
 class UsersRepositoryImpl : UsersRepository {
 
+    // не используется пока
     override fun getUsers(
         onSuccess: (List<UserEntity>) -> Unit,
         onError: ((Throwable) -> Unit)?
@@ -56,6 +57,12 @@ class UsersRepositoryImpl : UsersRepository {
         usersList.map { dto ->
             dto.mapDtoToEntity()
         }
+    }
+
+    override fun getUsersCache(): List<UserEntity> {
+        TODO("Not yet implemented")
+
+
     }
 
     private val api = Retrofit.Builder()

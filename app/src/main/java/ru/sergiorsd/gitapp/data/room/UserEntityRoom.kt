@@ -6,8 +6,8 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class UserEntityRoom(
-    @PrimaryKey var id: Long,
-    var login: String,
+    @PrimaryKey var id: Long = 0,
+    var login: String = "",
     @ColumnInfo(name = "avatar_url")
-    var avatarUrl: String
+    var avatarUrl: String = ""
 )

@@ -17,7 +17,9 @@ interface UsersDao {
     @Query("SELECT * FROM UserEntityRoom ")
     fun findByIdUser(userEntityRoom: UserEntityRoom)
 */
-
+// Не понятно как пользоваться
+    /*
     @Insert
     fun insertAllUsers(vararg userEntityRoom: UserEntityRoom)
+    */
 }
