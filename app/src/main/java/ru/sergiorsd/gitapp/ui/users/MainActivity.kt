@@ -1,33 +1,48 @@
 package ru.sergiorsd.gitapp.ui.users
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.schedulers.Schedulers
-import ru.sergiorsd.gitapp.app
 import ru.sergiorsd.gitapp.data.isnetwork.NetworkStatus
 import ru.sergiorsd.gitapp.databinding.ActivityMainBinding
 import ru.sergiorsd.gitapp.domain.entities.UserEntity
 import ru.sergiorsd.gitapp.ui.profile.DetailsActivity
 import ru.sergiorsd.gitapp.utils.ListConstant.TAG
+import ru.sergiorsd.gitapp.utils.MyThread
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private val myTreadHandler = MyThread()
+    /*
 
-    private val viewModel: UserViewModel by viewModels {
-        UserViewModelFactory(app.usersRepo)
+        private val viewModel: UserViewModel by viewModels {
+    //        UserViewModelFactory(app.usersRepo)
+            UserViewModelFactory(app.usersRepo, app.userCacheRepo)
+        }
+    */
+
+//    private val viewModel: UserViewModel by viewModels()
+
+
+    private val viewModel: UserViewModel by lazy {
+        ViewModelProvider(this)[UserViewModel::class.java]
     }
+
 
     private val adapter = UsersAdapter {
         viewModel.onUserClick(it)
@@ -36,7 +51,8 @@ class MainActivity : AppCompatActivity() {
     private val viewModelDisposable = CompositeDisposable()
     private lateinit var isNetwork: NetworkStatus
     private var isNetworkDisposable: Disposable? = null
-    private var lisStatus: MutableList<Boolean> = mutableListOf()
+
+    //    private var lisStatus: MutableList<Boolean> = mutableListOf()
     private var statusKey = false
 //    private var statusTrue = 0
 
@@ -45,7 +61,16 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        isNetwork = NetworkStatus(this)
+        myTreadHandler.start()
+
+        isNetwork = NetworkStatus(this) // TODO убрать потом
+
+        /*
+                // TODO ширина экрана
+                val width = Resources.getSystem().displayMetrics.widthPixels
+                Log.d(TAG, "width = $width px")
+        */
+
 
         initViews()
 //        initViewModel()
@@ -123,24 +148,23 @@ class MainActivity : AppCompatActivity() {
                             if (!statusKey && stat) {
                                 statusKey = true
                                 Log.d(TAG, "ЕСТЬ ИНТЕРНЕТ - statusKey: $statusKey ")
-                                statusTrue += 1
+//                                statusTrue += 1
                             }
                             if (statusKey && !stat) {
                                 statusKey = false
                                 Log.d(TAG, "НЕТ интернета - statusKey: $statusKey ")
                             }
-                            lisStatus.add(stat)
+//                            lisStatus.add(stat)
 
-                            Log.d(
-                                TAG,
-                                "$stat - Интернет и statusKey: $statusKey и statusTrue $statusTrue и список $lisStatus и ПОСЛЕДНЕЕ СОСТОЯНИЕ ${lisStatus[lisStatus.size - 1]}"
-                            )
+//                            Log.d(
+//                                TAG,
+//                                "$stat - Интернет и statusKey: $statusKey и statusTrue $statusTrue и список $lisStatus и ПОСЛЕДНЕЕ СОСТОЯНИЕ ${lisStatus[lisStatus.size - 1]}"
+//                            )
 
 
                         }
                     }
-         */
-
+*/
 
         /*
 
@@ -234,10 +258,14 @@ class MainActivity : AppCompatActivity() {
         viewModelDisposable.dispose()
         isNetworkDisposable?.dispose()
 
+        myTreadHandler.handler?.removeCallbacksAndMessages(null)
         super.onDestroy()
     }
 
     private fun initViews() {
+
+//        isNetwork = NetworkStatus(this)
+
         showProgress(false)
 
         binding.mainRefreshButton.setOnClickListener {
@@ -246,7 +274,10 @@ class MainActivity : AppCompatActivity() {
             Log.d(TAG, "initViews() called $tt")
             */
 
-            isInternet()
+
+//            isOnlineCheck(this)
+            isInternetCheck()
+//            isInternet()
 
 //            viewModel.onRefresh()
 
@@ -257,38 +288,75 @@ class MainActivity : AppCompatActivity() {
         showProgress(false)
     }
 
+    private fun isInternetCheck() {
+        Log.d(TAG, "isOnlineCheck - > ${isOnlineCheck(this)}")
+        viewModel.onRefresh(isOnlineCheck((this)))
+    }
+
     private fun isInternet() {
 
-        isNetworkDisposable = isNetwork.isOnline().subscribeOn(Schedulers.io())
+//        Log.d(TAG, "isInternet() called")
+
+        isNetworkDisposable = isNetwork.isOnline()
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy {
-                if (!statusKey && it) {
-                    statusKey = true
-                    Log.d(TAG, "ЕСТЬ ИНТЕРНЕТ - statusKey: $statusKey ")
+            .subscribeBy(
+                onNext = {
+
+                    if (!statusKey && it) {
+                        statusKey = true
+                        Log.d(TAG, "ЕСТЬ ИНТЕРНЕТ - statusKey: $statusKey ")
 //                    statusTrue += 1
-                    viewModel.onRefresh(statusKey)
+                        viewModel.onRefresh(statusKey)
 
+                    }
+                    if (statusKey && !it) {
+                        statusKey = false
+                        Log.d(TAG, "НЕТ интернета - statusKey: $statusKey ")
+
+                        viewModel.onRefresh(statusKey)
+                    }
+                    if (!statusKey && !it) {
+//                        statusKey = false
+                        Log.d(TAG, "============== НЕТ интернета -> $it - statusKey: $statusKey ")
+
+                        viewModel.onRefresh(statusKey)
+                    }
+
+                    /*
+                    Log.d(
+                        TAG,
+                        "$it - Интернет и statusKey: $statusKey "
+                    )
+                    */
+
+                    /*
+
+                    Toast.makeText(this, "$it - Интернет", Toast.LENGTH_SHORT).show()
+
+                    lisStatus.add(it)
+
+                    Log.d(
+                        TAG,
+                        "$it - Интернет и statusKey: $statusKey и statusTrue $statusTrue и список $lisStatus и ПОСЛЕДНЕЕ СОСТОЯНИЕ ${lisStatus[lisStatus.size - 1]}"
+                    )
+                    */
+                },
+                onError = {
+                    Log.d(TAG, "Ошибка = $it")
                 }
-                if (statusKey && !it) {
-                    statusKey = false
-                    Log.d(TAG, "НЕТ интернета - statusKey: $statusKey ")
+            )
 
-                    viewModel.onRefresh(statusKey)
-                }
+//        Log.d(TAG, "onRefresh() called $userCacheRepo")
+    }
 
-                /*
+    private fun isOnlineCheck(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
 
-                Toast.makeText(this, "$it - Интернет", Toast.LENGTH_SHORT).show()
-
-                lisStatus.add(it)
-
-                Log.d(
-                    TAG,
-                    "$it - Интернет и statusKey: $statusKey и statusTrue $statusTrue и список $lisStatus и ПОСЛЕДНЕЕ СОСТОЯНИЕ ${lisStatus[lisStatus.size - 1]}"
-                )
-                */
-            }
-
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
     }
 
     private fun initRecyclerView() {

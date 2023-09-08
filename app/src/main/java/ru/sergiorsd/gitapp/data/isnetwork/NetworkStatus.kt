@@ -4,9 +4,11 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
+import android.util.Log
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.subjects.BehaviorSubject
+import ru.sergiorsd.gitapp.utils.ListConstant.TAG
 
 class NetworkStatus(context: Context) : IsNetworkStatus {
 
@@ -34,14 +36,23 @@ class NetworkStatus(context: Context) : IsNetworkStatus {
                 override fun onUnavailable() {
                     //Вызывается, когда сеть не обнаружена после запроса
                     status.onNext(false)
+                    Log.d(TAG, "---------- Не обнаружен интернет")
 //                    Toast.makeText(context, "Не обнаружен интернет", Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onLost(network: Network) {
                     //Вызывается, когда сеть потеряна
                     status.onNext(false)
+                    Log.d(TAG, "----------- ПОТЕРЯН Интернет")
 //                    Toast.makeText(context, "ПОТЕРЯН Интернет", Toast.LENGTH_SHORT).show()
                 }
+
+                override fun onLosing(network: Network, maxMsToLive: Int) {
+                    status.onNext(false)
+
+                    Log.d(TAG, "----------- ПОТЕРЯН Интернет ----- ")
+                }
+
             })
     }
 

@@ -10,7 +10,7 @@ interface UsersDao {
     @Update
     fun updateUser(userEntityRoom: UserEntityRoom)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertUser(userEntityRoom: UserEntityRoom)
 /*
 
@@ -18,8 +18,6 @@ interface UsersDao {
     fun findByIdUser(userEntityRoom: UserEntityRoom)
 */
 // Не понятно как пользоваться
-    /*
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAllUsers(vararg userEntityRoom: UserEntityRoom)
-    */
 }

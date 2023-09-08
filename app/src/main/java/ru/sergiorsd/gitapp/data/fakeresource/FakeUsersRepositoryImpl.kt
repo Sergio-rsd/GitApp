@@ -26,5 +26,5 @@ class FakeUsersRepositoryImpl : UsersRepository {
     }
 
     override fun getUsers(): Single<List<UserEntity>> = Single.just(data)
-    override fun getUsersCache(): List<UserEntity> = data
+//    override fun getUsersCache(): List<UserEntity> = data
 }

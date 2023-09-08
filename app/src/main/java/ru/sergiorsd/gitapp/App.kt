@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.room.Room
+import ru.sergiorsd.gitapp.data.cache.UsersCacheRepository
+import ru.sergiorsd.gitapp.data.cache.UsersCacheRepositoryImpl
 import ru.sergiorsd.gitapp.data.retrofit.UsersRepositoryImpl
 import ru.sergiorsd.gitapp.data.room.UsersDao
 import ru.sergiorsd.gitapp.data.room.UsersDataBase
@@ -42,9 +44,13 @@ class App : Application() {
     //        val usersRepo : UsersRepository by lazy { FakeUsersRepositoryImpl() }
     val usersRepo: UsersRepository by lazy { UsersRepositoryImpl() }
 
-    //    val usersRepo: UsersRepository by lazy { UsersCacheRepositoryImpl() }
-    var userCacheRepo: MutableList<UserEntity> = mutableListOf()
+    val userCacheRepo : UsersCacheRepository by lazy { UsersCacheRepositoryImpl() }
+
+    //    val userCacheRepo: UsersCacheRepository by lazy { UsersCacheRepositoryImpl() }
+
+//    var userCacheRepo: MutableList<UserEntity> = mutableListOf()
 }
 
+var userCacheRepo: MutableList<UserEntity> = mutableListOf()
 val Context.app: App get() = applicationContext as App
 val Fragment.app: App get() = requireContext().applicationContext as App

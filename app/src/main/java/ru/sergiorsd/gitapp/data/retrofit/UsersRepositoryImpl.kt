@@ -58,12 +58,12 @@ class UsersRepositoryImpl : UsersRepository {
             dto.mapDtoToEntity()
         }
     }
+/*
 
     override fun getUsersCache(): List<UserEntity> {
         TODO("Not yet implemented")
-
-
     }
+*/
 
     private val api = Retrofit.Builder()
         .baseUrl(BASE_URL)
