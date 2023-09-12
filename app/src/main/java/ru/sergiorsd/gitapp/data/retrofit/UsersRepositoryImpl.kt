@@ -1,5 +1,6 @@
 package ru.sergiorsd.gitapp.data.retrofit
 
+import android.annotation.SuppressLint
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import okhttp3.OkHttpClient
@@ -16,6 +17,7 @@ private const val ERROR = "NO DATA OR NETWORK ERROR"
 class UsersRepositoryImpl : UsersRepository {
 
     // не используется пока
+    @SuppressLint("CheckResult")
     override fun getUsers(
         onSuccess: (List<UserEntity>) -> Unit,
         onError: ((Throwable) -> Unit)?

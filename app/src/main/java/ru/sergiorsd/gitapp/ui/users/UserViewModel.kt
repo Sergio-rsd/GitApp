@@ -1,5 +1,6 @@
 package ru.sergiorsd.gitapp.ui.users
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -40,10 +41,7 @@ class UserViewModel(
     val openProfileLiveData: Observable<UserEntity> = PublishSubject.create()
 
     private val usersRetrofit: Observable<List<UserEntity>> = BehaviorSubject.create()
-//    private val context = app.applicationContext
-
-    //    val isNetwork: Observable<Boolean> = BehaviorSubject.create()
-//    private lateinit var isNetwork: NetworkStatus
+    private val userRoom: Observable<List<UserEntity>> = BehaviorSubject.create()
 
     /*
 val usersLiveData: LiveData<List<UserEntity>> = MutableLiveData()
@@ -52,6 +50,7 @@ val progressLiveData: LiveData<Boolean> = MutableLiveData()
 val openProfileLiveData: LiveData<UserEntity> = SingleEventLiveData()
 */
 
+    @SuppressLint("CheckResult")
     fun onRefresh(isNetwork: Boolean) {
 
         Log.d(TAG, "onRefresh() called with: isNetwork = $isNetwork")
@@ -61,10 +60,19 @@ val openProfileLiveData: LiveData<UserEntity> = SingleEventLiveData()
         if (userCacheRepo.isEmpty()) {
             if (isNetwork) {
                 loadDataRetrofit()
+                usersRetrofit.subscribeBy {
+                    usersCache.saveUsersToCache(it)
+                    saveFromCacheToLocal(it)
+                    loadData()
+                }
 //                loadData()
             } else {
                 loadDataLocal()
-//                loadData()
+                userRoom.subscribeBy {
+//                    Log.d(TAG, "userRoom ====> $it")
+                    usersCache.saveUsersToCache(it)
+                    loadData()
+                }
             }
         }
 //        loadData()
@@ -98,26 +106,9 @@ val openProfileLiveData: LiveData<UserEntity> = SingleEventLiveData()
                     loadData()
                 }
         */
-
-//        loadData()
     }
 
-    private fun loadDataLocal() {
-        Log.d(TAG, "=========== loadDataLocal() called")
-//        usersLocal.getAllUsersFromLocal()
-
-        Thread {
-            usersCache.saveUsersToCache(usersLocal.getAllUsersFromLocal())
-            Log.d(TAG, "Считываем +++++ $userCacheRepo")
-
-//            loadData()
-        }.start()
-        loadData()
-
-
-//        usersCache.saveUsersToCache(usersLocal.getAllUsersFromLocal())
-    }
-
+    @SuppressLint("CheckResult")
     private fun loadData() {
         /*
         usersRepo.getUsers(
@@ -152,6 +143,7 @@ val openProfileLiveData: LiveData<UserEntity> = SingleEventLiveData()
 
         usersCache.getUsersCache()
             .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
             .subscribeBy(
                 onSuccess = {
                     progressLiveData.mutableObserve().onNext(false)
@@ -163,16 +155,46 @@ val openProfileLiveData: LiveData<UserEntity> = SingleEventLiveData()
                     errorLiveData.mutableObserve().onNext(it)
                 }
             )
+    }
 
+    @SuppressLint("CheckResult")
+    private fun loadDataLocal() {
+        Log.d(TAG, "=========== loadDataLocal() called")
+
+        usersLocal.getAllUsersFromLocal()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .subscribeBy(
+                onSuccess = {
+                    progressLiveData.mutableObserve().onNext(false)
+                    userRoom.mutableObserve().onNext(it)
+//                    Log.d(TAG, "loadDataLocal() ++++++ > $it")
+                },
+                onError = {
+                    progressLiveData.mutableObserve().onNext(false)
+                    errorLiveData.mutableObserve().onNext(it)
+                }
+            )
+        /*
+
+                Thread {
+                    usersCache.saveUsersToCache(usersLocal.getAllUsersFromLocal())
+                    Log.d(TAG, "Считываем +++++ $userCacheRepo")
+
+        //            loadData()
+                }.start()
+                loadData()
+        */
+//        usersCache.saveUsersToCache(usersLocal.getAllUsersFromLocal())
     }
 
     private fun saveFromCacheToLocal(listUsers: List<UserEntity>) {
         Thread {
             usersLocal.saveListUsersToLocal(listUsers)
         }.start()
-//        usersLocal.saveListUsersToLocal(listUsers)
     }
 
+    @SuppressLint("CheckResult")
     private fun loadDataRetrofit() {
         progressLiveData.mutableObserve().onNext(true)
 
@@ -181,29 +203,22 @@ val openProfileLiveData: LiveData<UserEntity> = SingleEventLiveData()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
             .doAfterSuccess {
-
 //                userCacheRepo.removeAll(it)
 //                userCacheRepo.addAll(it)
 
-                usersCache.saveUsersToCache(it)
-                Log.d(TAG, "loadDataRetrofit() из Retrofit ${userCacheRepo.count()}")
+//                usersCache.saveUsersToCache(it)
+
+//                Log.d(TAG, "loadDataRetrofit() из Retrofit ${userCacheRepo.count()}")
+
+                /*
                 saveFromCacheToLocal(it)
                 loadData()
+                */
             }
             .subscribeBy(
                 onSuccess = {
                     progressLiveData.mutableObserve().onNext(false)
                     usersRetrofit.mutableObserve().onNext(it)
-//                    usersLiveData.mutableObserve().onNext(it)
-                    /*
-                                        userCacheRepo.removeAll(it)
-                    //                    userCacheRepo.requireNoNulls()
-                                        userCacheRepo.addAll(it)
-                                        userCacheRepo.count()
-                                        */
-
-//                    Log.d(TAG, "loadDataRetrofit() из Retrofit ${userCacheRepo.count()}")
-//                    Log.d(TAG, "loadDataRetrofit() usersLiveData ${it}")
                 },
                 onError = {
                     progressLiveData.mutableObserve().onNext(false)
