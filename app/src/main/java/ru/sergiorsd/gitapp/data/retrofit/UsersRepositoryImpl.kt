@@ -1,11 +1,12 @@
 package ru.sergiorsd.gitapp.data.retrofit
 
+import android.annotation.SuppressLint
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.kotlin.subscribeBy
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.sergiorsd.gitapp.domain.entities.UserEntity
 import ru.sergiorsd.gitapp.domain.repository.UsersRepository
@@ -15,10 +16,13 @@ private const val ERROR = "NO DATA OR NETWORK ERROR"
 
 class UsersRepositoryImpl : UsersRepository {
 
+    // не используется пока
+    @SuppressLint("CheckResult")
     override fun getUsers(
         onSuccess: (List<UserEntity>) -> Unit,
         onError: ((Throwable) -> Unit)?
     ) {
+        /*
         api.getListUsers().enqueue(object : Callback<List<UserEntity>> {
             override fun onResponse(
                 call: Call<List<UserEntity>>,
@@ -37,11 +41,36 @@ class UsersRepositoryImpl : UsersRepository {
                 onError?.invoke(t)
             }
         })
+        */
+
+        api.getListUsers().subscribeBy(
+            onSuccess = { usersList ->
+                onSuccess.invoke(usersList.map { dto ->
+                    dto.mapDtoToEntity()
+                })
+            },
+            onError = {
+                onError?.invoke(it)
+            }
+        )
     }
+
+    override fun getUsers(): Single<List<UserEntity>> = api.getListUsers().map { usersList ->
+        usersList.map { dto ->
+            dto.mapDtoToEntity()
+        }
+    }
+/*
+
+    override fun getUsersCache(): List<UserEntity> {
+        TODO("Not yet implemented")
+    }
+*/
 
     private val api = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
+        .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
         .client(
             OkHttpClient.Builder().apply {
                 addInterceptor(HttpLoggingInterceptor().apply {

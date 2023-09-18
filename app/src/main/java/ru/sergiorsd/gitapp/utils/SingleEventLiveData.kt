@@ -1,4 +1,5 @@
 package ru.sergiorsd.gitapp.utils
+
 import android.util.Log
 import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner
@@ -29,6 +30,6 @@ class SingleEventLiveData<T> : MutableLiveData<T>() {
     }
 
     companion object {
-        private val TAG = "SingleLiveEvent"
+        private const val TAG = "SingleLiveEvent"
     }
 }

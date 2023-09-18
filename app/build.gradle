@@ -1,15 +1,18 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+
 }
 
 android {
-    compileSdk 32
+    compileSdk 34
 
     defaultConfig {
         applicationId "ru.sergiorsd.gitapp"
-        minSdk 26
-        targetSdk 32
+        minSdk 24
+        setTargetSdk(34)
+//        targetSdk 33
         versionCode 1
         versionName "1.0"
     }
@@ -21,34 +24,63 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+//        sourceCompatibility JavaVersion.VERSION_1_8
+//        targetCompatibility JavaVersion.VERSION_1_8
+
+//        sourceCompatibility = < MAJOR_JDK_VERSION >
+//                targetCompatibility = < MAJOR_JDK_VERSION >
+
+//    }
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+//        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
     buildFeatures {
         viewBinding true
     }
+    namespace 'ru.sergiorsd.gitapp'
 }
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.8.0'
-    implementation 'androidx.appcompat:appcompat:1.4.2'
-    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.fragment:fragment-ktx:1.6.1'
 
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.2'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.3'
-    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
 
-    implementation 'androidx.fragment:fragment-ktx:1.5.0'
+    // RxJava
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'
+    implementation 'io.reactivex.rxjava3:rxkotlin:3.0.1'
+    // контроль сети - не ясно зачем
+    implementation 'io.github.softartdev:reactivenetwork-rx3:4.0.0'
+    //RxJava3 + Retrofit2
+    implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
+
     // обработка json аннотации
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.3'
-    implementation 'io.coil-kt:coil:2.1.0'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.2'
+    implementation 'io.coil-kt:coil:2.4.0'
+
+    // Room
+    def room_version = '2.5.2'
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+//    ksp "androidx.room:room-compiler:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
+    // rxjava + room
+//    implementation "androidx.room:room-rxjava3:3.1.7"
+    implementation "androidx.room:room-rxjava3:$room_version"
 }
