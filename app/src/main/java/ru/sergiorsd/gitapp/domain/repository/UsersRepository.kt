@@ -9,10 +9,8 @@ interface UsersRepository {
         onSuccess: (List<UserEntity>) -> Unit,
         onError: ((Throwable) -> Unit)? = null
     )
+
     // RxJava
-    fun getUsers() : Single<List<UserEntity>>
-/*
-    // Пустой репозиторий в памяти
-    fun getUsersCache() : List<UserEntity>
-    */
+    fun getUsers(): Single<List<UserEntity>>
+
 }

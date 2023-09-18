@@ -19,7 +19,6 @@ class LocalRepositoryImpl(private val localDataSource: UsersDao) : UsersRoomRepo
             localDataSource.insertUser(convertUserEntityToUserLocal(user))
         }
     }
-
     override fun saveUserToLocal(user: UserEntity) {
         TODO("Not yet implemented")
     }

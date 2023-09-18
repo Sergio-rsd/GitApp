@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.BehaviorSubject
@@ -176,17 +175,7 @@ val openProfileLiveData: LiveData<UserEntity> = SingleEventLiveData()
                     errorLiveData.mutableObserve().onNext(it)
                 }
             )
-        /*
 
-                Thread {
-                    usersCache.saveUsersToCache(usersLocal.getAllUsersFromLocal())
-                    Log.d(TAG, "Считываем +++++ $userCacheRepo")
-
-        //            loadData()
-                }.start()
-                loadData()
-        */
-//        usersCache.saveUsersToCache(usersLocal.getAllUsersFromLocal())
     }
 
     private fun saveFromCacheToLocal(listUsers: List<UserEntity>) {
@@ -199,39 +188,28 @@ val openProfileLiveData: LiveData<UserEntity> = SingleEventLiveData()
     private fun loadDataRetrofit() {
         progressLiveData.mutableObserve().onNext(true)
 
-        val userRetrofitGet: Disposable =
-            usersRepo.getUsers()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doAfterSuccess {
+//        val userRetrofitGet: Disposable =
+        usersRepo.getUsers()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            /*
+            .doAfterSuccess {
 //                userCacheRepo.removeAll(it)
 //                userCacheRepo.addAll(it)
 
 //                usersCache.saveUsersToCache(it)
 
-//                Log.d(TAG, "loadDataRetrofit() из Retrofit ${userCacheRepo.count()}")
-
-                    /*
-                    saveFromCacheToLocal(it)
-                    loadData()
-                    */
+            }*/
+            .subscribeBy(
+                onSuccess = {
+                    progressLiveData.mutableObserve().onNext(false)
+                    usersRetrofit.mutableObserve().onNext(it)
+                },
+                onError = {
+                    progressLiveData.mutableObserve().onNext(false)
+                    errorLiveData.mutableObserve().onNext(it)
                 }
-                .subscribeBy(
-                    onSuccess = {
-                        progressLiveData.mutableObserve().onNext(false)
-                        usersRetrofit.mutableObserve().onNext(it)
-                    },
-                    onError = {
-                        progressLiveData.mutableObserve().onNext(false)
-                        errorLiveData.mutableObserve().onNext(it)
-                    }
-                )
-        /*
-        userRetrofitGet.let {
-            Log.d(TAG, "userRetrofit.let -> called $it")
-        }
-        val testUserRetro = usersRepo.getUsers().subscribe()
-        */
+            )
     }
 
     fun onUserClick(userEntity: UserEntity) {
@@ -244,23 +222,5 @@ val openProfileLiveData: LiveData<UserEntity> = SingleEventLiveData()
         return this as? MutableLiveData<T>
             ?: throw IllegalStateException("It is not MutableLiveData o_O")
     }
-    /*
-        private fun <T : Any> Observable<T>.mutableObserve(): Subject<T> {
-            return this as? Subject<T>
-                ?: throw IllegalStateException("It is not Subject o_O")
-        }
-        */
 }
 
-/*
-
-class UserViewModelFactory(private val repository: UsersRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T = UserViewModel(repository) as T
-}
-*/
-
-/*
-// переписан ???
-class UserViewModelFactory(private val repository: UsersRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T = UserViewModel(repository) as T
-}*/
