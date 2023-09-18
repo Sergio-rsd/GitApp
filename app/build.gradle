@@ -11,7 +11,8 @@ android {
     defaultConfig {
         applicationId "ru.sergiorsd.gitapp"
         minSdk 24
-        targetSdk 33
+        setTargetSdk(34)
+//        targetSdk 33
         versionCode 1
         versionName "1.0"
     }
